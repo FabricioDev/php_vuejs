@@ -1,0 +1,15 @@
+{
+    "name": "fabriciodev/php_vuejs",
+    "authors": [
+        {
+            "name": "Fabrício M. Damasceno",
+            "email": "fabricio_wm@hotmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "SON\\Framework\\": "src"
+        }
+    }
+}
