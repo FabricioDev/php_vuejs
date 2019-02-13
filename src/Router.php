@@ -2,10 +2,47 @@
 
 namespace SON\Framework;
 
+use SON\Framework\Exceptions\HttpException;
+
 class Router
 {
-    public function __construct()
+    private $routes = [];
+
+    public function add(STRING $method, string $pattern, $callback)
     {
-        echo '<h1>Olá</h1>';
+        $method = strtolower($method);
+        $pattern = '/^'. str_replace('/', '\/', $pattern) .'$/';
+        $this->routes[$method][$pattern] = $callback;
     }
+
+    public function run()
+    {
+        $url = $this->getCurrentUrl();
+        $method = strtolower($_SERVER['REQUEST_METHOD']);
+
+        if(empty($this->routes[$method])){
+            throw new HttpException('Página não encontrada', 404);
+        }
+
+        foreach ($this->routes[$method] as $route => $action){
+            if(preg_match($route, $url, $params)){
+                return $action($params);
+            }
+        }
+        throw new HttpException('Página não encontrada', 404);
+
+    }
+
+    public function getCurrentUrl()
+    {
+        $url = $_SERVER['PATH_INFO'] ?? '/';
+
+        if(strlen($url) > 1){
+            $url = rtrim($url, '/');
+        }
+
+        return $url;
+    }
+
+
 }
